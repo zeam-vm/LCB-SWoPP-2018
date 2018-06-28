@@ -1,0 +1,68 @@
+\documentclass[submit,techrep]{ipsj}
+
+
+
+\usepackage{booktabs} % For formal tables
+\usepackage{xcolor}
+
+\usepackage[dvips]{graphicx}
+\usepackage{latexsym}
+
+\def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
+\def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
+\def\|{\verb|}
+
+\setcounter{巻数}{53}%vol53=2012
+\setcounter{号数}{10}
+\setcounter{page}{1}
+
+
+\def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}
+
+\begin{document}
+\title{Nodeプログラミングモデルを活用したC++およびElixirの実行環境の実装}
+\etitle{Implementation of Runtime Environments of C++ and Elixir with the Node Programming Model}
+
+\paffiliate{Kitakyu-u}{北九州市立大学\\
+University of Kitakyushu}
+\affiliate{Delight}{有限会社デライトシステムズ\\
+Delight Systems Co., Ltd.}
+\paffiliate{Kyoto-u}{京都大学\\
+Kyoto University}
+
+
+\author{山崎 進}{Yamazaki Susumu}{Kitakyu-u}[zacky@kitakyu-u.ac.jp]
+\author{森 正和}{Mori Masakazu}{Delight}[mori@delightsystems.com]
+\author{上野 嘉大}{Ueno Yoshihiro}{Delight}[delightadmin@delightsystems.com]
+\author{高瀬 英希}{TAKASE Hideki}{Kyoto-u}[takase@i.kyoto-u.ac.jp]
+
+\begin{abstract}
+Node.jsでは，コールバックを用いてI/Oを非同期的に扱ってノンプリエンプティブなマルチタスクにする機構Nodeプログラミングモデルが備わっている。これにより，ウェブサーバーのメモリ使用量を格段に減らすことができ，同時セッション最大数やレイテンシが改善される。我々はC++とElixirで同様の機構を実装した。C++への実装をZackernelと称し，Elixirへの実装を軽量コールバックスレッドと称している。ZackernelはRFIDのような極端に小規模で消費電力の少ないIoTシステムを組む場合のカーネルとしての用途，軽量コールバックスレッドはクラウドサーバーでの用途をそれぞれ想定している。ZackernelはC++11で採用された匿名関数を利用して，dispatchメソッドにて次に呼び出すべき関数をキューから読み込んで呼び出すという原理で実現する。軽量コールバックスレッドは，Elixirでは関数が一級オブジェクトであるので，関数のリストをキューとして保持し，キューの先頭の関数の実行が終わったら次の関数を呼び出すという原理で実現する。今後，プロセス間通信の機能を実装し，ベンチマークプログラムに適用して性能を評価したい。
+\end{abstract}
+
+
+\begin{jkeyword}
+Elixir，C++，Node.js，マルチタスク
+\end{jkeyword}
+
+
+\begin{eabstract}
+\end{eabstract}
+
+\begin{ekeyword}
+Elixir, C++, Node.js, multi-tasking
+\end{ekeyword}
+
+\maketitle
+
+\input{description}
+
+\begin{acknowledgment}
+
+\end{acknowledgment}
+
+
+\bibliographystyle{ipsjsort}
+\bibliography{reference}
+
+\end{document}
