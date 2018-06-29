@@ -5,6 +5,7 @@
 \begin{table}[tb]
 \centering
 \caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(表)}
+\ecaption{Results: Table of Comparison of Memory Size of Light-weight Callback Threads and Processes}
 \label{tab:results}
 \begin{tabular}{r
 >{\columncolor[HTML]{C0C0C0}}r r}
@@ -19,10 +20,12 @@
 
 \figref{fig:results}
 
-\begin{figure}[tb]
-
-\includegraphics{memory-callback-process.png}
-
-\caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(グラフ)}
+\begin{figure*}[t]
+\centering
+\includegraphicS[width=0.6\linewidth]{memory-callback-process.png}
+\caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(散布図)}
+\ecaption{Results: Scatterplot of Comparison of Memory Size of Light-weight Callback Threads and Processes}
 \label{fig:results}
-\end{figure}
+\end{figure*}
+
+

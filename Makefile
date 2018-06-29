@@ -2,7 +2,7 @@ PDF = manuscript.pdf
 
 all: ${PDF}
 
-%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib memory-callback-process.xbb
+%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib Makefile memory-callback-process.xbb
 	platex $<
 	- pbibtex $*
 	platex $<
@@ -15,6 +15,7 @@ description.tex: description.md
 	@cat $^ \
 	| pandoc -f markdown -t latex -V documentclass=ltjarticle --pdf-engine=lualatex -f markdown-auto_identifiers \
 	| sed 's/includegraphics/includegraphics[width=1.0\\columnwidth]/g' \
+	| sed 's/includegraphicS/includegraphics/g' \
 	| sed 's/\[htbp\]/\[t\]/g' \
 	> description.tex
 
