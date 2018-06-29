@@ -54,6 +54,7 @@ Elixir, \Cpp, Node.js, マルチタスク
 
 
 \begin{eabstract}
+Node.js has the Node programming model, which is a non-preemptive multi-tasking mechanism that processes I/O asynchronously using callbacks. Thus, it improves maximum concurrent sessions and latency of web servers because it requires few memory. We implement it in \Cpp and Elixir. We call the implementation in \Cpp and Elixir Zackernel and light-weight callback threads (LCTs), respectively. We assume that Zackernel will be used as a kernel in an extremely small and power-saving IoT system such as an RFID-based IoT, and that LCTs will be used as a cloud server. Zackernel is implemented using anonymous functions, which has been adopted by \Cpp 11, by the principle that the {\tt dispatch} method calls back the next process function, with reading from the scheduler queue. LCTs is realized by the priciple that implements the scheduler queue as a function list and call back the next process function after running the function of the head of the queue because Elixir treats a function as a first-class object. We will implement an inter-process communication mechanism, apply it a benchmark, and evaluate performance of it.
 \end{eabstract}
 
 \begin{ekeyword}
