@@ -2,7 +2,7 @@ PDF = manuscript.pdf
 
 all: ${PDF}
 
-%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib
+%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib memory-callback-process.xbb
 	platex $<
 	- pbibtex $*
 	platex $<
@@ -18,8 +18,8 @@ description.tex: description.md
 	| sed 's/\[htbp\]/\[t\]/g' \
 	> description.tex
 
-#test.xbb: test.png
-#	extractbb test.png
+memory-callback-process.xbb: memory-callback-process.png
+	extractbb $<
 
 clean:
 	@rm -rf description.{dvi,log,tex} manuscript.{pdf,aux,dvi,log,out,blg,bbl} *.xbb
