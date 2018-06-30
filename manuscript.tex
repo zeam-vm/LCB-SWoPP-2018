@@ -11,6 +11,8 @@
 \usepackage{xspace}
 \usepackage{jtygm}
 
+\def\newblock{\hskip .11em plus .33em minus .07em}
+
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
 \def\|{\verb|}
@@ -18,6 +20,7 @@
 \newcommand{\Rplus}{\protect\hspace{-.1em}\protect\raisebox{.8ex}{\smaller{\smaller\smaller\textbf{+}}}}
 
 \newcommand{\Cpp}{\mbox{C\Rplus\Rplus}\xspace}
+
 
 
 \setcounter{巻数}{53}%vol53=2012
@@ -45,7 +48,7 @@ Kyoto University}
 \author{高瀬 英希}{TAKASE Hideki}{Kyoto-u}[takase@i.kyoto-u.ac.jp]
 
 \begin{abstract}
-Node.jsでは，コールバックを用いてI/Oを非同期的に扱ってノンプリエンプティブなマルチタスクにする機構Nodeプログラミングモデルが備わっている。これにより，ウェブサーバーのメモリ使用量を格段に減らすことができ，同時セッション最大数やレイテンシが改善される。我々は \Cpp とElixirで同様の機構を実装した。 \Cpp への実装をZackernelと称し，Elixirへの実装を軽量コールバックスレッドと称している。ZackernelはRFIDのような極端に小規模で消費電力の少ないIoTシステムを組む場合のカーネルとしての用途，軽量コールバックスレッドはクラウドサーバーでの用途をそれぞれ想定している。Zackernelは \Cpp 11で採用された匿名関数を利用して，dispatchメソッドにて次に呼び出すべき関数をキューから読み込んで呼び出すという原理で実現する。軽量コールバックスレッドは，Elixirでは関数が一級オブジェクトであるので，関数のリストをキューとして保持し，キューの先頭の関数の実行が終わったら次の関数を呼び出すという原理で実現する。今後，プロセス間通信の機能を実装し，ベンチマークプログラムに適用して性能を評価したい。
+Node.jsでは，コールバックを用いてI/Oを非同期的に扱ってノンプリエンプティブなマルチタスクにする機構Nodeプログラミングモデルが備わっている．これにより，ウェブサーバーのメモリ使用量を格段に減らすことができ，同時セッション最大数やレイテンシが改善される．我々は \Cpp とElixirで同様の機構を実装した． \Cpp への実装をZackernelと称し，Elixirへの実装を軽量コールバックスレッドと称している．ZackernelはRFIDのような極端に小規模で消費電力の少ないIoTシステムを組む場合のカーネルとしての用途，軽量コールバックスレッドはクラウドサーバーでの用途をそれぞれ想定している．Zackernelは \Cpp 11で採用された匿名関数を利用して，dispatchメソッドにて次に呼び出すべき関数をキューから読み込んで呼び出すという原理で実現する．軽量コールバックスレッドは，Elixirでは関数が一級オブジェクトであるので，関数のリストをキューとして保持し，キューの先頭の関数の実行が終わったら次の関数を呼び出すという原理で実現する．今後，プロセス間通信の機能を実装し，ベンチマークプログラムに適用して性能を評価したい．
 \end{abstract}
 
 
@@ -66,9 +69,8 @@ Elixir,  \Cpp , Node.js, multi-tasking
 
 \input{description}
 
-\begin{acknowledgment}
-整数演算のベンチマークで適切なものがないか相談したところ素体のロジスティック写像\cite{Miyazaki14}をご教示くださった上原聡先生，宮崎武氏に深く感謝する．
-\end{acknowledgment}
+%\begin{acknowledgment}
+%\end{acknowledgment}
 
 
 \bibliographystyle{ipsjsort}
