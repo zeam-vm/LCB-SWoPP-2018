@@ -23,7 +23,7 @@ Nodeプログラミングモデル\cite{Node}の一例として，Node.jsのウ�
 ```
 
 
-\begin{figure}[t]
+\begin{figure}[tb]
 \begin{verbatim}
 const http = require('http');
 
@@ -67,7 +67,7 @@ Zackernelのプログラム例を\figref{fig:Zackernel_code}に示す．
 
 `blinkLed2`も同様であるが，先にLED2を消灯してから500msスリープしLED2を点灯して500msスリープして先頭に戻る．結果として，これらのコードにより，LED1とLED2を交互に500msおきに点滅させることができる．
 
-\begin{figure}[t]
+\begin{figure}[tb]
 \begin{verbatim}
 volatile bool led1 = false;
 volatile bool led2 = false;
@@ -113,11 +113,17 @@ Zackernelのコード行数は約900行であり，すべて \Cpp で記述さ�
 
 軽量コールバックスレッドを用いたElixirプログラム例を\figref{fig:LCB_code}に示す．`pid = ZeamCallback.Receptor.new` で軽量コールバックスレッドを保持するプロセスを生成し，`pid`にプロセスIDを格納する．続く2つの`send(pid, {:spawn, ...}) ` は，それぞれ1つずつ軽量コールバックスレッドを新規作成して起動する．引数で与えられた`fn(tid) -> `から`end`までがコールバックされる匿名関数である．`IO.puts` は文字列を表示する関数である．`tid` には軽量コールバックスレッドのIDが格納される．1つめの軽量コールバックスレッドでは，`tid`の値が0なので，`foo 0`が表示される．2つめの軽量コールバックスレッドでは `tid` の値が1なので，`bar 0`が表示される．これらが順番に実行するようにスケジュールされるので，`foo 0`，`bar 1`と表示される．
 
-\begin{figure}[t]
+\begin{figure}[tb]
 \begin{verbatim}
 pid = ZeamCallback.Receptor.new
-send(pid, {:spawn, fn(tid) -> IO.puts "foo #{tid}" end})
-send(pid, {:spawn, fn(tid) -> IO.puts "bar #{tid}" end})
+send(pid, {:spawn, 
+  fn(tid) ->
+    IO.puts "foo #{tid}" 
+  end})
+send(pid, {:spawn, 
+  fn(tid) -> 
+    IO.puts "bar #{tid}" 
+  end})
 \end{verbatim}
 \centering
 \caption{軽量コールバックスレッドのコード例}
@@ -144,7 +150,7 @@ Workerの持つ環境変数は，適宜Receptorに送られてバックアップ
 
 実験で用いた環境を\tabref{tab:environment}に示す．
 
-\begin{table}[t]
+\begin{table}[tb]
 \centering
 \caption{実行環境}
 \ecaption{Runtime Environment}
@@ -189,6 +195,15 @@ Num. of Tasks & Zackernel    & \Cpp 11 Thread \\ \hline
 
 これらの1スレッド/プロセスあたりのメモリ消費量を比較すると，Zackernel が204バイトと最も少なく，軽量コールバックスレッドが1332バイト，Elixirプロセスが2835バイトと続き， \Cpp 11 スレッドが約546KBとなる．処理系レベルから設計を見直すことで，軽量コールバックスレッドをZackernel並みのメモリ消費量に抑える最適化を施せる余地があるのかもしれない．
 
+\begin{figure*}[t]
+\centering
+\includegraphicS[width=0.6\linewidth]{memory-callback-process.png}
+\caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(散布図)}
+\ecaption{Results: Scatterplot of Comparison of Memory Size of Light-weight Callback Threads and Processes}
+\label{fig:results}
+\end{figure*}
+
+
 \begin{table}[tb]
 \centering
 \caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(表)}
@@ -218,14 +233,5 @@ Num. of Tasks & Zackernel    & \Cpp 11 Thread \\ \hline
 Zackernel はトリッキーなプログラミングになっていることから保守性が悪く，メモリリークの問題がまだ多く残っている．メモリリークが起こっている理由としては，通常の \Cpp プログラム同様，ガーベジコレクションされないという要因もありうるが，そのほかにも，Elixir のような関数型言語ではなく \Cpp で実装しているため，末尾再帰の最適化がなされないことから，コールバックする際に再帰呼び出しが深くなってしまう要因もありうる．
 
 軽量コールバックスレッドについては，現状では実行キューで保持されているメモリ領域を適切に解放していないので，GCが有効に機能しない問題があるので，改善したい．プロセス間通信の仕組みを実装することで，ようやく実用的なプログラムを書くことができる．もしそれが実現できた時には，軽量コールバックスレッドを用いるように Phoenix を実装しなおすことを考えている \cite{WSA2018-1}．また，Zackernel 並みに1スレッドあたりのメモリ消費量を抑えるような言語処理系の設計・実装を試みる．
-
-
-\begin{figure*}[t]
-\centering
-\includegraphicS[width=0.6\linewidth]{memory-callback-process.png}
-\caption{実験結果: 軽量コールバックスレッドとプロセスのメモリ消費量の比較(散布図)}
-\ecaption{Results: Scatterplot of Comparison of Memory Size of Light-weight Callback Threads and Processes}
-\label{fig:results}
-\end{figure*}
 
 
