@@ -23,7 +23,7 @@ Nodeプログラミングモデル\cite{Node}の一例として，Node.jsのウ�
 ```
 
 
-\begin{figure*}[t]
+\begin{figure}[t]
 \begin{verbatim}
 const http = require('http');
 
@@ -37,14 +37,16 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(
+    'Server running at http://${hostname}:${port}/'
+  );
 });
 \end{verbatim}
 \centering
 \caption{Node.js のコード例}
 \ecaption{A Sample Code of Node.js}
 \label{fig:Node_sample}
-\end{figure*}
+\end{figure}
 
 
 コールバック関数は，この例のように**匿名関数**として定義することもできるため，プログラムのメソッドや関数の中に記述できる．そのため，処理の流れを分断することなくプログラミングできる．
@@ -54,6 +56,56 @@ server.listen(port, hostname, () => {
 
 
 # Zackernel
+
+ZackernelはNodeプログラミングモデル\cite{Node}に着想を得て， \Cpp で実装したコールバック関数を用いてマルチタスクを実現するライブラリである．同様のものに libevent\cite{libevent}があるが，Zackernel は \Cpp 11 で導入された匿名関数を用いることで可読性を改善している．
+
+Zackernelのプログラム例を\figref{fig:Zackernel_code}に示す．
+
+変数`led1`と`led2`はメモリマップドI/Oで接続されたLEDであるとする．`main`関数では，Zackernelを初期化したあと，Zackernelが提供する`fork`によって，関数`blinkLed1`と`blinkLed2`を並行に呼び出す．
+
+`blinkLed1`中の`zLoop`は，引数に指定された(匿名)関数を無限ループさせる．`[&] {}`という記述は \Cpp 11 で提供される匿名関数であり，外側の関数の名前空間を引き継いだ上で独立した関数を定義する．この中で `led1 = true;`を実行することで LED1 を点灯したあと，Zackernelが提供する`sleep`によって第1引数で指定されている500msの間スリープした後，第2引数で指定する(匿名)関数を実行する．この中で LED1 を消灯し，500msの間スリープする．ここまで実行したところで`zLoop`の作用により，再び`led1 = true;`を実行する．
+
+`blinkLed2`も同様であるが，先にLED2を消灯してから500msスリープしLED2を点灯して500msスリープして先頭に戻る．結果として，これらのコードにより，LED1とLED2を交互に500msおきに点滅させることができる．
+
+\begin{figure}[t]
+\begin{verbatim}
+volatile bool led1 = false;
+volatile bool led2 = false;
+
+void blinkLed1() {
+  zLoop([&] {
+     led1 = true;
+     sleep(500, [&] {
+       led1 = false;
+       sleep(500, [&] {});
+     });
+  });
+}
+
+void blinkLed2() {
+  zLoop([&] {
+     led2 = false;
+     sleep(500, [&] {
+       led1 = true;
+       sleep(500, [&] {});
+     });
+  });
+}
+
+void main() {
+  Zackernel::init();
+  fork(blinkLed1, blinkLed2);
+}
+\end{verbatim}
+\centering
+\caption{Zackernel のコード例}
+\ecaption{A Sample Code of Zackernel}
+\label{fig:Zackernel_code}
+\end{figure}
+
+Zackernelの内部構成について説明する\cite{WSA2018-1}．Zackernel のScheduleクラスはコールバックする関数を保持し，Schedule同士を線形リスト構造でつないでいる．ZackernelのZackernelクラスはScheduleのキューを保持する．核心となるdispatchメソッドは，次に呼び出すべき関数をキューから読み込んで呼び出す．dispatchに再入している時にはコールバックする関数を呼び出さない，そうでない場合のみコールバックする関数を呼び出すロジックにすることで，スタックオーバーフローにならないようにしている．
+
+
 
 # 軽量コールバックスレッド
 
