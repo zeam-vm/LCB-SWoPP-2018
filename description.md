@@ -12,7 +12,46 @@ Node.jsでは，コールバックを用いてI/Oを非同期的に扱ってノ�
 
 # Nodeプログラミングモデル
 
-Nodeプログラミングモデル\cite{Node}
+Nodeプログラミングモデル\cite{Node}の一例として，Node.jsのウェブサイト\cite{NodeSite}に掲載されているプログラム例を\figref{fig:Node_sample}に示す．このウェブサーバーのプログラムを実行してウェブブラウザで `http://localhost:3000` にアクセスすると `Hello World` と表示される．このウェブサーバーに接続があるごとに，下記のコールバック関数が呼び出されるが，この際にスレッドを生成してスタック領域を確保するようなことはしない．
+
+```javascript
+(req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World\n');
+}
+```
+
+
+\begin{figure*}[t]
+\begin{verbatim}
+const http = require('http');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World\n');
+});
+
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+\end{verbatim}
+\centering
+\caption{Node.js のコード例}
+\ecaption{A Sample Code of Node.js}
+\label{fig:Node_sample}
+\end{figure*}
+
+
+コールバック関数は，この例のように**匿名関数**として定義することもできるため，プログラムのメソッドや関数の中に記述できる．そのため，処理の流れを分断することなくプログラミングできる．
+
+コールバック関数の呼出しは，通常のメソッドや関数の呼出しと同等である．したがって，スタックメモリのような広大なメモリ領域を消費することなく，かつ迅速に呼び出すことができる．
+
+
 
 # Zackernel
 

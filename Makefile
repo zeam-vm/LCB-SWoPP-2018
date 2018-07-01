@@ -13,7 +13,7 @@ all: ${PDF}
 
 description.tex: description.md
 	@cat $^ \
-	| pandoc -f markdown -t latex -V documentclass=ltjarticle --pdf-engine=lualatex -f markdown-auto_identifiers \
+	| pandoc -f markdown -t latex -V documentclass=ltjarticle --pdf-engine=lualatex -f markdown-auto_identifiers --highlight-style=pygments \
 	| sed 's/includegraphics/includegraphics[width=1.0\\columnwidth]/g' \
 	| sed 's/includegraphicS/includegraphics/g' \
 	| sed 's/\[htbp\]/\[t\]/g' \
